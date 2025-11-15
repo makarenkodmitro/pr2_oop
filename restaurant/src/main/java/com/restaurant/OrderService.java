@@ -36,7 +36,7 @@ public class OrderService {
      * @throws RuntimeException якщо виникає помилка під час збереження даних
      */
     public void saveOrderItem(OrderItem orderitem) {
-        String sql = "INSERT INTO orderitems (amount, order_date) VALUES (?, ?)";
+        String sql = "INSERT INTO orderitems (quantity, dish) VALUES (?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, orderitem.getQuantity());
