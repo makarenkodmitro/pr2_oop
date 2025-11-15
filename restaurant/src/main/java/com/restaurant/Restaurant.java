@@ -1,3 +1,8 @@
+package com.restaurant;
+
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+
 // Головний клас для демонстрації роботи системи
 public class Restaurant {
     public static void main(String[] args) {
@@ -23,7 +28,11 @@ public class Restaurant {
         // Процес замовлення
         customer.scanMenu();
         customer.makeOrder();
-        Order order = new Order();
+        
+        Injector injector = Guice.createInjector(new RestaurantModule());
+        Order order = injector.getInstance(Order.class);
+        order.setupOrder();
+
         table.setOrder(order);
         
         // Додавання страв
