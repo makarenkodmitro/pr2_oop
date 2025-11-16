@@ -1,3 +1,5 @@
+package com.restaurant;
+
 // Клас шеф-кухаря
 public class Chef extends ServiceParticipant implements Booking {
     private String specialization;

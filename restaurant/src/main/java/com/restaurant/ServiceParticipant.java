@@ -1,3 +1,5 @@
+package com.restaurant;
+
 // Абстрактний клас для всіх учасників обслуговування
 public abstract class ServiceParticipant {
     protected String name;

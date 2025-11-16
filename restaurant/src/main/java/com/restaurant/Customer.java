@@ -1,3 +1,5 @@
+package com.restaurant;
+
 // Клас відвідувача ресторану
 public class Customer extends ServiceParticipant implements Booking {
     private Table table;
