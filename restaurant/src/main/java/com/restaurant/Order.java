@@ -11,10 +11,10 @@ public class Order {
     private int itemCount;
     private OrderService orderService;
 
-    @Inject
-    public Order(OrderService orderService) {
-        this.orderService = orderService;
-    }
+    // @Inject
+    // public Order(OrderService orderService) {
+    //    this.orderService = orderService;
+    //}
 
     public void setupOrder() {
         this.id = nextId++;
@@ -23,10 +23,10 @@ public class Order {
         this.itemCount = 0;
     }
 
-    // @Inject
-    // public void setOrderService(OrderService orderService) {
-    //    this.orderService = orderService;
-    // }
+    @Inject
+    public void setOrderService(OrderService orderService) {
+       this.orderService = orderService;
+    }
 
 
     public void addItem(String dish, int quantity) {
