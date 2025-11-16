@@ -25,7 +25,7 @@ public class Order {
 
     // @Inject
     // public void setOrderService(OrderService orderService) {
-    //     this.orderService = orderService;
+    //    this.orderService = orderService;
     // }
 
 
