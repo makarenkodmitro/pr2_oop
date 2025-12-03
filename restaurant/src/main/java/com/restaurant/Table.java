@@ -1,3 +1,5 @@
+package com.restaurant;
+
 // Клас для столика в ресторані
 public class Table {
     private int number;

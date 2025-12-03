@@ -1,0 +1,168 @@
+classDiagram
+
+  class OrderItem {
+    <<Data>>
+    +String dish
+    +int quantity
+    +OrderItem(String dish, int quantity)
+    +int getQuantity()
+    +String getDish()
+    +void displayItem()
+  }
+
+  class Order {
+    <<Model>>
+    -int id
+    -String status
+    -OrderItem[] items
+    -int itemCount
+    -OrderService orderService
+    +void setupOrder()
+    +void addItem(String dish, int quantity)
+    +void changeStatus(String status)
+    +void displayOrder()
+    +List<OrderItem> getAllOrderItems()
+  }
+
+  class OrderService {
+    <<Service>>
+    -Connection connection
+    +OrderService(Connection connection)
+    +void saveOrderItem(OrderItem orderitem)
+    +List<OrderItem> getAllOrderItems()
+    +Connection getConnection()
+  }
+
+  class PaymentService {
+    <<Service>>
+    +void processPayment()
+  }
+
+  class Database {
+    <<Infrastructure>>
+    +String url
+    +connect() Connection
+    +query(String sql) List
+  }
+
+  class RestaurantController {
+    <<Controller>>
+    -OrderService orderService
+    +RestaurantController(OrderService orderService)
+    +List<OrderItem> getAllOrderItems()
+  }
+
+  class RestaurantWebView {
+    <<View>>
+    -RestaurantController controller
+    -WebServer server
+    +RestaurantWebView(RestaurantController controller, WebServer server)
+    +void start(int port)
+    +void stop()
+    -void setupRoutes()
+    -void getAllOrderItems(HttpContext context)
+  }
+
+  class WebServer {
+    <<Infrastructure>>
+    +void start(int port)
+    +void stop()
+    +void before(RequestHandler handler)
+    +void options(String path, RequestHandler handler)
+    +void get(String path, RequestHandler handler)
+  }
+
+  class JavalinWebServer {
+    <<Infrastructure>>
+    -Javalin app
+    +JavalinWebServer()
+    +void start(int port)
+    +void stop()
+    +void before(RequestHandler handler)
+    +void options(String path, RequestHandler handler)
+    +void get(String path, RequestHandler handler)
+  }
+
+  class HttpContext {
+    <<Interface>>
+    +void json(Object obj)
+    +HttpContext status(int code)
+    +void header(String name, String value)
+    +void result(String content)
+  }
+
+  class JavalinHttpContext {
+    <<HTTP>>
+    -Context context
+    +void json(Object obj)
+    +HttpContext status(int code)
+    +void header(String name, String value)
+    +void result(String content)
+  }
+
+  class Customer {
+    <<Actor>>
+    -String name
+    -Table table
+    +Customer(String name)
+    +void scanMenu()
+    +void makeOrder()
+    +void pay(PaymentService paymentService)
+    +void rateService(int rating)
+  }
+
+  class Waiter {
+    <<Actor>>
+    -String name
+    -int id
+    +Waiter(String name, int id)
+    +void confirmOrder()
+    +void checkAllergies()
+  }
+
+  class Chef {
+    <<Actor>>
+    -String name
+    -String specialization
+    +Chef(String name, String specialization)
+    +void markReady()
+  }
+
+  class Table {
+    <<Support>>
+    -int tableNumber
+    -Order order
+    +Table(int tableNumber)
+    +void setOrder(Order order)
+    +Order getOrder()
+  }
+
+  Order *-- OrderItem : "contains 0..*"
+  Table *-- Order : "contains 0..1"
+
+  Order o-- OrderService : "uses 1"
+  RestaurantWebView o-- RestaurantController : "aggregates 1"
+  RestaurantWebView o-- WebServer : "aggregates 1"
+
+  RestaurantWebView --> RestaurantController : "View→Controller"
+  RestaurantController --> OrderService : "Controller→Service"
+  OrderService --> OrderItem : "manages *"
+
+  RestaurantWebView --> HttpContext : "creates context"
+  WebServer <|.. JavalinWebServer : "implements"
+  HttpContext <|.. JavalinHttpContext : "implements"
+
+  Customer --> Table : "sits at"
+  Order --> Customer : "created by"
+  Order --> Waiter : "managed by"
+  Order --> Chef : "prepared by"
+
+  Customer --> PaymentService : "uses"
+  Order --> PaymentService : "uses (optional)"
+
+  OrderService ..> OrderItem : "instantiates"
+
+  OrderService --> Database : "reads/writes"
+  RestaurantWebView ..> Database : "serves static resources"
+
+  RestaurantWebView ..> "REST API\n/api/orderitems" : "exposes"

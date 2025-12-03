@@ -1,3 +1,5 @@
+package com.restaurant;
+
 // Клас для позиції в замовленні
 public class OrderItem {
     private String dish;
@@ -11,4 +13,13 @@ public class OrderItem {
     public void displayItem() {
         System.out.println(dish + " x" + quantity);
     }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getDish() {
+        return dish;
+    }
+
 }

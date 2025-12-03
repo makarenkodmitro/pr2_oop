@@ -1,3 +1,5 @@
+package com.restaurant;
+
 // Клас офіціанта
 public class Waiter extends ServiceParticipant implements Booking {
     private int id;
