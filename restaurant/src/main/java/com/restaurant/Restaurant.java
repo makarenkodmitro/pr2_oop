@@ -57,5 +57,13 @@ public class Restaurant {
         order.changeStatus("Завершене");
         
         System.out.println("\n=== Демонстрацію завершено ===");
+
+            // Запускаємо веб-сервер для перегляду
+        runWebMode(injector);
+    }
+
+    private static void runWebMode(Injector injector) {
+        RestaurantWebView webView = injector.getInstance(RestaurantWebView.class);
+        webView.start(8080);
     }
 }

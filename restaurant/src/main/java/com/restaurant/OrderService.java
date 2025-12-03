@@ -2,7 +2,10 @@ package com.restaurant;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.inject.Inject;
 
@@ -45,5 +48,24 @@ public class OrderService {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to save orderitem", e);
         }
+    }
+
+        public List<OrderItem> getAllOrderItems() {
+        List<OrderItem> orderitems = new ArrayList<>();
+        String sql = "SELECT quantity, dish FROM orderitems";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            
+            while (resultSet.next()) {
+                int quantity = resultSet.getInt("quantity");
+                String dish = resultSet.getString("dish");
+                orderitems.add(new OrderItem(dish, quantity));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Не вдалося отримати позиції замовлення", e);
+        }
+
+        return orderitems;
     }
 }

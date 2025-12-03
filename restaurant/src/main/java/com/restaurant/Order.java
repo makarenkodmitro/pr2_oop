@@ -1,5 +1,7 @@
 package com.restaurant;
 
+import java.util.List;
+
 import com.google.inject.Inject;
 
 // Клас для замовлення
@@ -52,5 +54,9 @@ public class Order {
         for (int i = 0; i < itemCount; i++) {
             items[i].displayItem();
         }
+    }
+
+        public List<OrderItem> getAllOrderItems() {
+        return orderService.getAllOrderItems();
     }
 }

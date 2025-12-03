@@ -1,86 +1,98 @@
-# Система управління рестораном
+# Система управління рестораном (MVC)
 
-Імітаційний прототип системи управління рестораном, що демонструє взаємодію між відвідувачами, офіціантами та шеф-кухарем. Проект розроблений на Java з використанням Maven як системи управління залежностями.
+Імітаційний прототип системи управління рестораном з веб-інтерфейсом, що демонструє архітектуру **MVC (Model-View-Controller)** та взаємодію між відвідувачами, офіціантами та шеф-кухарем. Проект розроблений на Java з використанням Maven та фреймворку Javalin для веб-сервера.
 
 ## Призначення проєкту
 
-Система реалізує основні операції ресторану:
-- **Відвідувач**: сканує меню, робить замовлення, оплачує та оцінює сервіс
-- **Офіціант**: підтверджує замовлення, перевіряє алергени
-- **Шеф-кухар**: позначає готовність страв на кухонному екрані
 
-## Структура проєкту
+# Система управління рестораном (MVC)
 
-- `restaurant/` - основна директорія Maven проекту
-  - `src/main/java/com/restaurant/` - вихідний код Java
-    - `ServiceParticipant.java` - абстрактний клас учасника обслуговування
-    - `Booking.java` - інтерфейс для операцій з бронюванням
-    - `Customer.java` - клас відвідувача
-    - `Waiter.java` - клас офіціанта
-    - `Chef.java` - клас шеф-кухаря
-    - `Order.java` - клас замовлення
-    - `OrderItem.java` - клас позиції замовлення
-    - `OrderService.java` - сервіс роботи з замовленнями в БД
-    - `Table.java` - клас столика
-    - `PaymentService.java` - клас сервісу оплати
-    - `RestaurantModule.java` - модуль Guice для впровадження залежностей
-    - `Restaurant.java` - головний клас з демонстрацією
-    - `App.java` - допоміжний клас
-  - `src/test/java/com/restaurant/` - тести
-  - `pom.xml` - конфігурація Maven
-- `docs/` - UML-діаграми та вимоги
-  - `requirements.md` - вимоги до проєкту
-  - `usecase.puml` - діаграма варіантів використання
-  - `class.puml` - діаграма класів
-  - `sequence.puml` - діаграма послідовності
-  - `state.puml` - діаграма станів
+Імітаційний прототип системи управління рестораном з веб-інтерфейсом. Проєкт демонструє архітектуру **MVC (Model-View-Controller)**, Dependency Injection з Guice та простий REST API на Javalin.
+
+## Проєкт — коротко
+
+Демонструє повний робочий цикл: створення замовлення (Customer → Order → OrderItem), підтвердження офіціантом, приготування шеф-кухарем та оплата. Дані зберігаються та читаються через `OrderService` і доступні через REST API, яке обслуговує `RestaurantWebView`.
+
+## Структура (коротко)
+
+```
+restaurant/
+├── src/main/java/com/restaurant/
+│   ├── model/        # Order, OrderItem, Table, ServiceParticipant
+│   ├── service/      # OrderService, PaymentService
+│   ├── controller/   # RestaurantController
+│   ├── view/         # RestaurantWebView, webserver/*
+│   └── Restaurant.java (точка входу)
+├── src/main/resources/ (index.html, script.js, style.css)
+├── docs/             # UML-діаграми
+└── pom.xml
+```
 
 ## Компіляція та запуск
 
-### Компіляція з використанням Maven
+1) Скомпілювати проект:
 
 ```bash
-# Перейти в директорію проєкту
 cd restaurant
-
-# Скомпілювати проект
 mvn clean compile
-
-# Виконати тести
-mvn test
 ```
 
-### Запуск програми
+2) Запустити програму (консольна демонстрація + веб-сервер):
 
 ```bash
-# Запустити головний клас Restaurant
 mvn exec:java -Dexec.mainClass="com.restaurant.Restaurant"
 ```
 
-### Альтернативна компіляція та запуск (без Maven)
+Після запуску:
+- Консоль: демонстрація взаємодії між акторами
+- Веб-сервер: `http://localhost:8080`
+- REST API: `GET /api/orderitems` повертає JSON список позицій замовлення
+
+## Тестування REST API
 
 ```bash
-# Перейти в директорію з вихідним кодом
-cd restaurant/src/main/java
+# Отримати всі позиції замовлення
+curl http://localhost:8080/api/orderitems
 
-# Скомпілювати всі Java файли
-javac com/restaurant/*.java
-
-# Запустити головний клас
-java com.restaurant.Restaurant
+# Приклад відповіді:
+#[{"dish":"Борщ","quantity":1},{"dish":"Вареники","quantity":2}]
 ```
 
-## Залежності
+## Веб-інтерфейс
 
-Проект використовує наступні бібліотеки (див. [pom.xml](restaurant/pom.xml)):
-- **JUnit 3.8.1** - для тестування
-- **Google Guice 5.1.0** - для впровадження залежностей
-- **SQLite JDBC 3.36.0.3** - для роботи з базою даних SQLite
+Веб-сторінка знаходиться в `src/main/resources/index.html`. Для локального перегляду відкрийте її через Live Server у VS Code або будь-який статичний сервер. Сторінка робить AJAX-запит до `GET /api/orderitems` і відображає `dish` та `quantity`.
+
+## Основні класи та ролі
+
+- `Order`, `OrderItem` — модель даних
+- `OrderService` — доступ до БД (save/get)
+- `RestaurantController` — контролер між View і Service
+- `RestaurantWebView` — REST-інтерфейс + налаштування маршрутів
+- `WebServer`/`JavalinWebServer` — інфраструктура HTTP
+
+## Залежності (деталі в `pom.xml`)
+
+- Google Guice — Dependency Injection
+- Javalin — веб-фреймворк для REST API
+- SQLite JDBC — приклад драйвера БД
+- SLF4J — логування
+- JUnit — тести
+
+## Архітектурні патерни та зв'язки
+
+- MVC: Model ← Controller ← View
+- DI: Guice (використання `@Inject` і `RestaurantModule`)
+- Абстракції: `WebServer`, `HttpContext` для відділення фреймворку
+- Композиція: `Order *-- OrderItem`
+- Агрегація: `Order o-- OrderService`
 
 ## UML-діаграми
 
-Діаграми знаходяться в директорії [`docs/`](docs/):
-- [`usecase.puml`](docs/usecase.puml) - діаграма варіантів використання
+Файли діаграм лежать у `docs/` (наприклад, `mvc.class.puml`). Вони показують класи, зв'язки (композиція, агрегація, реалізація) і REST-потік.
+
+---
+
+Якщо хочете, я додам у README приклади POST/PUT для створення позицій, приклади JSON-схем або інструкцію для Docker-контейнера. 
 - [`class.puml`](docs/class.puml) - діаграма класів
 - [`sequence.puml`](docs/sequence.puml) - діаграма послідовності
 - [`state.puml`](docs/state.puml) - діаграма станів

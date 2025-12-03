@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import com.restaurant.webserver.JavalinWebServer;
+import com.restaurant.webserver.WebServer;
+
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
@@ -47,5 +50,11 @@ public class RestaurantModule extends AbstractModule {
         } catch (SQLException e) {
             throw new RuntimeException("Failed to create table", e);
         }
+    }
+
+    @Provides
+    @Singleton
+    WebServer provideWebServer() {
+        return new JavalinWebServer();
     }
 }
